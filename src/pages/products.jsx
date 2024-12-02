@@ -2,29 +2,37 @@ import { Link } from 'react-router';
 import { useQuery } from 'react-query'
 import { useState } from 'react';
 
-const fetchProducts = async () => {
-    let data = await fetch('https://dummyjson.com/recipes');
+const fetchProducts = async (search) => {
+    let data = await fetch(
+        search ?
+            `https://dummyjson.com/recipes/search?q=${search}` :
+            `https://dummyjson.com/recipes`);
     data = await data.json();
     return data;
 }
 
 function Products() {
-    const [value, setValue] = useState();
+    const [search, setSearch] = useState('');
     const { data, isLoading, isError } = useQuery({
-        QueryKey: ['products'],
-        queryFn: () => fetchProducts(),
+        queryKey: ['recipes', search],
+        queryFn: () => fetchProducts(search),
+        keepPreviousData: true,
     })
     console.log("products=>", data);
 
-    if (isLoading) return <p>Loading...</p>
-    if (isError) return <p>Something Went Wrong</p>
+    if (isError) return <div className='flex justify-center items-center h-dvh'> <p className='text-3xl font-semibold'>Something Went Wrong</p></div>
 
     return (
         <>
             <section className="text-gray-600 body-font">
                 <div className="container px-5 py-24 mx-auto">
-                    <h1 className='text-center text-4xl font-semibold mb-10'>All Recipes</h1>
-                    <input type="text" placeholder='Enter Recipe' className='w-full py-2 px-2 outline-none border-2 border-[#ccc] rounded-[8px]' value={value} onChange={(e) => setValue(e.target.value)} />
+                    <h1 className='text-center text-4xl font-semibold mb-10'>Delicous Recipes</h1>
+                    {isLoading && <div className='flex justify-center items-center h-dvh'><p className='text-3xl font-semibold'>Loading...</p></div>}
+                    <input type="text"
+                        placeholder='Enter Recipe'
+                        className='w-full py-2 px-2 outline-none border-2 border-[#ccc] rounded-[8px]'
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)} />
                     <div className="flex flex-wrap -m-4">
                         {
                             data?.recipes?.map((product) => {
