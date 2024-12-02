@@ -12,7 +12,9 @@ const fetchProducts = async (search) => {
 }
 
 function Products() {
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(''); // search karne ke liye state banai hai
+
+    // React Query
     const { data, isLoading, isError } = useQuery({
         queryKey: ['recipes', search],
         queryFn: () => fetchProducts(search),

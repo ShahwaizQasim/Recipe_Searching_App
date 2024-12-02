@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router';
 import { useQuery } from 'react-query'
 
 const fetchProductsDetail = async (id) => {
-    let data = await fetch(`'https://dummyjson.com/recipes/'${id}`);
+    let data = await fetch(`https://dummyjson.com/recipes/${id}`);
     data = await data.json();
     return data;
 }
@@ -12,14 +12,18 @@ function ProductDetail() {
     console.log("id", id);
 
     const { data, isLoading, isError } = useQuery({
-        QueryKey: ['products', id],
+        QueryKey: ['recipes', id],
         queryFn: () => fetchProductsDetail(id),
 
     })
     console.log("products", data);
 
-    if (isLoading) return <p>Loading...</p>
-    if (isError) return <p>Something Went Wrong</p>
+    if (isLoading) return <div className='flex justify-center items-center h-dvh'>
+        <p className='text-3xl font-semibold'>Loading...</p>
+    </div>
+    if (isError) return <div className='flex justify-center items-center h-dvh'>
+        <p className='text-3xl font-semibold'>Something Went Wrong</p>
+    </div>
 
     return (
         <>
@@ -29,14 +33,14 @@ function ProductDetail() {
                         <img
                             alt="ecommerce"
                             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-                            src={data?.images}
+                            src={data?.image}
                         />
                         <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                             <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                            {data?.category}
+                                {data?.cuisine}
                             </h2>
                             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-                              {data?.title}
+                                {data?.name}
                             </h1>
                             <div className="flex mb-4">
                                 <span className="flex items-center">
@@ -95,7 +99,7 @@ function ProductDetail() {
                                     >
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
-                                    <span className="text-gray-600 ml-3">4 Reviews</span>
+                                    <span className="text-gray-600 ml-3">Reviews {data.reviewCount}</span>
                                 </span>
                                 <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200 space-x-2s">
                                     <a className="text-gray-500">
@@ -137,7 +141,7 @@ function ProductDetail() {
                                 </span>
                             </div>
                             <p className="leading-relaxed">
-                               {data?.description}
+                                {data?.instructions}
                             </p>
                             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
                                 <div className="flex">
@@ -173,7 +177,7 @@ function ProductDetail() {
                             </div>
                             <div className="flex">
                                 <span className="title-font font-medium text-2xl text-gray-900">
-                                    ${data?.price}
+                                    Rating {data?.rating}
                                 </span>
                                 <button className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
                                     Button
